@@ -1,0 +1,10 @@
+openpyxl
+streamlit
+openai
+pandas
+numpy
+pysqlite3-binary
+chromadb
+FlagEmbedding
+torch
+transformers
