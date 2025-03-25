@@ -74,14 +74,9 @@ def display_partial_text(label: str, text: str, char_limit=100):
             st.text(text)
 
 ############################
-# 0-1) (제거됨) JinaEmbeddingModel
-############################
-# --- JinaEmbeddingModel 관련 코드를 전부 제거했음 ---
-
-############################
 # [추가] 엑셀 파일 캐싱 로드
 ############################
-@cache_data
+@cache_data(show_spinner=False)
 def load_all_excel_data(path:str = "./all_raw.xlsx") -> pd.DataFrame:
     """
     all_raw.xlsx 데이터를 한 번만 로드 후 캐싱
@@ -94,12 +89,12 @@ def load_all_excel_data(path:str = "./all_raw.xlsx") -> pd.DataFrame:
 ############################
 # [추가] BGE 모델 캐싱
 ############################
-@cache_resource
+@cache_resource(show_spinner=False)
 def get_bge_model():
     """
     BGE 모델을 한 번만 로드하여 모든 세션(사용자)이 공유하도록 함
     """
-    print("[INFO] Loading BGE model only once...")
+    # 로그 출력문 제거
     model = BGEM3FlagModel(
         'BAAI/bge-m3',
         use_fp16=False,  # CPU라면 False
@@ -110,13 +105,13 @@ def get_bge_model():
 ############################
 # [추가] ChromaDB 컬렉션 캐싱
 ############################
-@cache_resource
+@cache_resource(show_spinner=False)
 def get_chroma_collection(db_path: str = "./chroma_db_bge", collection_name: str = "job_postings_collection"):
     """
     chroma_db를 한 번만 생성하여 모든 세션이 공유.
     읽기 전용으로 사용 시 동시 접근 문제가 줄어듦.
     """
-    print(f"[INFO] Opening Chromadb client at {db_path} ...")
+    # 로그 출력문 제거
     client_chroma = chromadb.PersistentClient(path=db_path)
     collection = client_chroma.get_collection(collection_name)
     return collection
@@ -383,20 +378,11 @@ if st.session_state["selected_tab"] == "job_recommendation":
             user_input_json = {"soft_filter": soft_filter_dict}
             job_title_input = job_title.strip()
 
-            print("=== [Debug] user_input_json ===")
-            print(user_input_json)
-            print("=== [Debug] hard_filter ===")
-            print(hard_filter_dict)
-            print("=== [Debug] soft_filter_dict ===")
-            print(json.dumps(soft_filter_dict, ensure_ascii=False, indent=2))
-            print("=== [Debug] job_title_input ===", job_title_input)
-            print("===========================================")
-
             ##############################################################################
             # B) 임베딩 모델 및 ChromaDB 컬렉션 로드 (BGE만 사용)
             ##############################################################################
             db_path = "./chroma_db_bge"
-            bge_model = get_bge_model()  # @st.cache_resource로 캐싱된 BGE 모델
+            bge_model = get_bge_model()  # @st.cache_resource(show_spinner=False)로 캐싱된 BGE 모델
 
             def embed_with_model(text: str):
                 if not text.strip():
@@ -800,10 +786,7 @@ if st.session_state["selected_tab"] == "job_recommendation":
             loading_msg = st.empty()
             loading_msg.markdown("#### ⏳공고 추천 이유를 알려드릴게요. 잠시만 기다려주세요️⌛")
 
-            # top_df는 바로 위 Case별 분기에서 정의된 '추천 결과' DataFrame
-            # (Case마다 변수명이 동일해야 한다는 점에 주의)
-            # 여기서는 가장 마지막에 top_df가 정의된 위치를 따라감.
-            # 만약 케이스별로 top_df가 없으면(추천 결과 없음) stop() 했을 것.
+            # top_df는 각 케이스 분기(Case A/B/C/D)에서 최종적으로 정의됨
             explanation = generate_recommendation_rationale(user_input_json, top_df)
             if "latest_explanation" not in st.session_state:
                 st.session_state["latest_explanation"] = []
