@@ -8,3 +8,4 @@ chromadb
 FlagEmbedding
 torch
 transformers
+protobuf==3.20.*
