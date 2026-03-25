@@ -12,3 +12,4 @@ sentence-transformers==2.2.2
 FlagEmbedding==1.2.10
 sentencepiece
 accelerate
+huggingface_hub==0.20.3
