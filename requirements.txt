@@ -6,13 +6,13 @@ pysqlite3-binary
 chromadb
 torch==2.1.2
 transformers==4.38.2
-protobuf==3.20.*
 sentence-transformers==2.2.2
 FlagEmbedding==1.2.10
-sentencepiece
 accelerate
 huggingface_hub==0.20.3
 pyarrow==12.0.1
 numpy==1.26.4
 tokenizers==0.15.2
 datasets==2.16.1
+sentencepiece==0.1.99
+protobuf==3.20.3
