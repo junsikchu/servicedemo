@@ -7,5 +7,5 @@ pysqlite3-binary
 chromadb
 FlagEmbedding
 torch
-transformers
+transformers==4.38.2
 protobuf==3.20.*
