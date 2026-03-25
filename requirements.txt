@@ -5,7 +5,10 @@ pandas
 numpy
 pysqlite3-binary
 chromadb
-FlagEmbedding
-torch
+torch==2.1.2
 transformers==4.38.2
 protobuf==3.20.*
+sentence-transformers==2.2.2
+FlagEmbedding==1.2.10
+sentencepiece
+accelerate
